@@ -1,0 +1,106 @@
+{
+  "info": {
+    "name": "Darija Translator API",
+    "description": "LLM-powered REST service translating to Moroccan Darija. Set the baseUrl, username and password collection variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "{{username}}", "type": "string" },
+      { "key": "password", "value": "{{password}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "username", "value": "student" },
+    { "key": "password", "value": "darija2026" }
+  ],
+  "item": [
+    {
+      "name": "Health (public)",
+      "request": { "auth": { "type": "noauth" }, "method": "GET", "url": "{{baseUrl}}/api/health" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('200 UP', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().status).to.eql('UP'); });"
+      ] } }]
+    },
+    {
+      "name": "Translate (JSON)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"text\": \"Good morning, how are you today?\",\n  \"sourceLanguage\": \"English\",\n  \"script\": \"arabic\"\n}" },
+        "url": "{{baseUrl}}/api/translate"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('200 with a Darija translation', () => {",
+        "  pm.response.to.have.status(200);",
+        "  const body = pm.response.json();",
+        "  pm.expect(body.translation).to.be.a('string').and.not.empty;",
+        "  pm.expect(body.targetLanguage).to.eql('ary');",
+        "});"
+      ] } }]
+    },
+    {
+      "name": "Translate (Latin script)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"text\": \"See you tomorrow at the station\",\n  \"script\": \"latin\"\n}" },
+        "url": "{{baseUrl}}/api/translate"
+      }
+    },
+    {
+      "name": "Translate (plain text)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "text/plain" }],
+        "body": { "mode": "raw", "raw": "Thank you very much" },
+        "url": "{{baseUrl}}/api/translate"
+      }
+    },
+    {
+      "name": "Translate (GET)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/translate?text=Good night&script=latin", "host": ["{{baseUrl}}"], "path": ["api", "translate"],
+          "query": [{ "key": "text", "value": "Good night" }, { "key": "script", "value": "latin" }] }
+      }
+    },
+    {
+      "name": "No credentials → 401",
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"text\":\"Hello\"}" },
+        "url": "{{baseUrl}}/api/translate"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('401 with Basic challenge', () => { pm.response.to.have.status(401); pm.expect(pm.response.headers.get('WWW-Authenticate')).to.include('Basic'); });"
+      ] } }]
+    },
+    {
+      "name": "Wrong password → 401",
+      "request": {
+        "auth": { "type": "basic", "basic": [
+          { "key": "username", "value": "student", "type": "string" },
+          { "key": "password", "value": "wrong", "type": "string" } ] },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"text\":\"Hello\"}" },
+        "url": "{{baseUrl}}/api/translate"
+      }
+    },
+    {
+      "name": "Empty text → 400",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"text\":\"\"}" },
+        "url": "{{baseUrl}}/api/translate"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [ "pm.test('400', () => pm.response.to.have.status(400));" ] } }]
+    }
+  ]
+}
