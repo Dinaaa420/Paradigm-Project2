@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Darija Translator</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="../icons/icon32.png" alt="" width="22" height="22">
+      <h1>Darija Translator</h1>
+    </div>
+    <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Zm7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.3 7.3 0 0 0-1.69-.98l-.38-2.65A.49.49 0 0 0 14 2h-4a.49.49 0 0 0-.49.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.49.49 0 0 0 .12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66a.49.49 0 0 0-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.49.42h4c.24 0 .45-.18.49-.42l.38-2.65a7.3 7.3 0 0 0 1.69-.98l2.49 1.01c.22.08.49 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.66Z"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="row">
+        <label for="sourceLang" class="label">From</label>
+        <select id="sourceLang">
+          <option value="auto">Detect language</option>
+          <option>English</option>
+          <option>French</option>
+          <option>Spanish</option>
+          <option>German</option>
+          <option>Italian</option>
+          <option>Modern Standard Arabic</option>
+        </select>
+        <button id="micBtn" class="icon-btn" title="Speak (voice-to-voice translation)" aria-label="Speak">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z"/></svg>
+        </button>
+      </div>
+      <textarea id="sourceText" rows="5" placeholder="Select text on any page and right-click → “Translate to Darija”, or type here…" maxlength="5000"></textarea>
+      <div class="row small">
+        <label class="toggle"><input type="checkbox" id="livePaste"> Auto-paste selection</label>
+        <span id="charCount" class="muted">0 / 5000</span>
+      </div>
+    </section>
+
+    <section class="actions">
+      <div class="segmented" role="radiogroup" aria-label="Output script">
+        <input type="radio" name="script" id="scriptArabic" value="arabic" checked>
+        <label for="scriptArabic">العربية</label>
+        <input type="radio" name="script" id="scriptLatin" value="latin">
+        <label for="scriptLatin">Latin (3, 7, 9)</label>
+      </div>
+      <button id="translateBtn" class="primary">Translate</button>
+    </section>
+
+    <section class="card result" aria-live="polite">
+      <div class="row">
+        <span class="label">Darija</span>
+        <span id="meta" class="muted small"></span>
+      </div>
+      <div id="output" class="output" dir="auto"></div>
+      <div class="row tools">
+        <button id="speakBtn" class="ghost" disabled>🔊 Read aloud</button>
+        <button id="copyBtn" class="ghost" disabled>Copy</button>
+        <label class="toggle small"><input type="checkbox" id="autoSpeak"> Auto-read</label>
+      </div>
+    </section>
+
+    <p id="status" class="status" role="status"></p>
+
+    <details id="historyBox">
+      <summary>History</summary>
+      <ul id="history"></ul>
+      <button id="clearHistory" class="ghost small">Clear history</button>
+    </details>
+  </main>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>
